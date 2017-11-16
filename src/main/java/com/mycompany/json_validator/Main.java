@@ -29,8 +29,6 @@ public class Main {
     public static void main(String[] args) throws IOException {
         final HttpServer server = startServer();
         System.out.println(String.format("Server available at "
-                + "%s\nHit enter to stop it...", BASE_URI));
-        System.in.read();
-        server.stop();
+                + "%s\n", BASE_URI));
     }
 }
