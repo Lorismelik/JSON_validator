@@ -16,7 +16,7 @@ import java.net.URI;
 public class Main {
 
     // curl --form "file=@filename" http://localhost:80/validator/resource/upload/
-    public static final String BASE_URI = "http://localhost:80/validator/";
+    public static final String BASE_URI = "http://localhost:8080/validator/";
 
     public static HttpServer startServer() {
         ResourceConfig rc = new ResourceConfig().packages("com.mycompany.json_validator");
