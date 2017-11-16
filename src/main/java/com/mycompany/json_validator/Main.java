@@ -30,7 +30,5 @@ public class Main {
         final HttpServer server = startServer();
         System.out.println(String.format("Server available at "
                 + "%s\n", BASE_URI));
-        System.in.read();
-        server.stop();
     }
 }
