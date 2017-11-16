@@ -23,11 +23,10 @@ import java.io.BufferedReader;
 import java.util.stream.Collectors;
 
 /* Root resource */
-@Path("/resource")
+@Path("")
 public class Resource {
 
     @POST
-    @Path("/upload")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
 
