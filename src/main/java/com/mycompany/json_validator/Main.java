@@ -26,7 +26,7 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException {
-        final HttpServer server = startServer();
+        startServer();
         System.out.println(String.format("Server available at "
                 + "%s\n", BASE_URI));
     }
