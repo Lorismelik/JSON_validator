@@ -11,10 +11,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import com.google.gson.*;
 import javax.ws.rs.core.Response;
-
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /* Root resource */
@@ -30,8 +31,20 @@ public class Resource {
         try {
             result = gson.fromJson(json, Object.class);
         } catch (JsonSyntaxException e) {
-            return Response.status(200).entity(e.getCause().getMessage()).build();
+            return Response.status(200).entity(gson.toJson(makeError(e))).build();
         }
         return Response.status(200).entity(gson.toJson(result)).build();
+    }
+    
+     private Map<String, String> makeError(JsonSyntaxException e) {
+        String messageDetail = e.getCause().getMessage();
+        Map<String, String> error = new HashMap<>();
+        String[] arrayMessage = messageDetail.split(" at", 2);
+        error.put("resource", "filename");
+        error.put("request-id", "12345");
+        error.put("errorCode", "12345");
+        error.put("errorPlace", arrayMessage[1]);
+        error.put("errorMessage", arrayMessage[0]);
+        return error;
     }
 }
