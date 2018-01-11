@@ -15,7 +15,7 @@ import java.net.URI;
 
 public class Main {
 
-    public static final String BASE_URI = "http://0.0.0.0:8080";
+    public static final String BASE_URI = "http://0.0.0.0:80";
 
     public static HttpServer startServer() {
         ResourceConfig rc = new ResourceConfig().packages("com.mycompany.json_validator");
