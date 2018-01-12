@@ -17,6 +17,11 @@ public class Main {
 
     public static final String BASE_URI = "http://0.0.0.0:80";
 
+     /**
+     * Creates resource config and http server.
+     * @return HttpServer
+     * 
+     */
     public static HttpServer startServer() {
         ResourceConfig rc = new ResourceConfig().packages("com.mycompany.json_validator");
         rc.register(MultiPartFeature.class);
@@ -25,6 +30,11 @@ public class Main {
         return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);
     }
 
+     /**
+     * The entry point.
+     * @param args
+     * 
+     */
     public static void main(String[] args) throws IOException {
         startServer();
         System.out.println(String.format("Server available at "

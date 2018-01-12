@@ -21,26 +21,44 @@ import javax.ws.rs.Consumes;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
-/* Root resource */
 @Path("")
+
 public class Resource {
+
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.TEXT_PLAIN)
-
-    public Response checkFile(@FormDataParam("file") InputStream stream, @FormDataParam("file") FormDataContentDisposition fileDetail){
-        final String json = new BufferedReader(new InputStreamReader(stream)).lines().collect(Collectors.joining());  
+    /**
+     * Vadidates JSON file.
+     *
+     * @throws IOException
+     * @param InputStream stream
+     * @param FormDataContentDisposition fileDetail
+     *
+     * @return Response
+     */
+    public Response checkFile(@FormDataParam("file") InputStream stream, @FormDataParam("file") FormDataContentDisposition fileDetail) {
+        final String json = new BufferedReader(new InputStreamReader(stream)).lines().collect(Collectors.joining());
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         Object result;
         try {
             result = gson.fromJson(json, Object.class);
-       } catch (JsonSyntaxException e) {
+        } catch (JsonSyntaxException e) {
             return Response.status(200).entity(gson.toJson(makeError(e, fileDetail))).build();
         }
         return Response.status(200).entity(gson.toJson(result)).build();
     }
-    
-     private Map<String, String> makeError(JsonSyntaxException e, FormDataContentDisposition fileDetail) {
+
+    /**
+     * Makes error message.
+     *
+     * @throws IOException
+     * @param JsonSyntaxException e
+     * @param FormDataContentDisposition fileDetail
+     *
+     * @return Map<String, String>
+     */
+    private Map<String, String> makeError(JsonSyntaxException e, FormDataContentDisposition fileDetail) {
         String messageDetail = e.getCause().getMessage();
         Map<String, String> error = new HashMap<>();
         String[] arrayMessage = messageDetail.split(" at", 2);
