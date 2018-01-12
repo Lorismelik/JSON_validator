@@ -17,30 +17,34 @@ import java.io.BufferedReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.ws.rs.Consumes;
+import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
 /* Root resource */
 @Path("")
 public class Resource {
     @POST
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.TEXT_PLAIN)
 
-    public Response checkFile(InputStream stream){
+    public Response checkFile(@FormDataParam("file") InputStream stream, @FormDataParam("file") FormDataContentDisposition fileDetail){
         final String json = new BufferedReader(new InputStreamReader(stream)).lines().collect(Collectors.joining());  
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         Object result;
         try {
             result = gson.fromJson(json, Object.class);
-        } catch (JsonSyntaxException e) {
-            return Response.status(200).entity(gson.toJson(makeError(e))).build();
+       } catch (JsonSyntaxException e) {
+            return Response.status(200).entity(gson.toJson(makeError(e, fileDetail))).build();
         }
         return Response.status(200).entity(gson.toJson(result)).build();
     }
     
-     private Map<String, String> makeError(JsonSyntaxException e) {
+     private Map<String, String> makeError(JsonSyntaxException e, FormDataContentDisposition fileDetail) {
         String messageDetail = e.getCause().getMessage();
         Map<String, String> error = new HashMap<>();
         String[] arrayMessage = messageDetail.split(" at", 2);
-        error.put("resource", "filename");
+        error.put("resource", fileDetail.getFileName());
         error.put("request-id", "12345");
         error.put("errorCode", "12345");
         error.put("errorPlace", arrayMessage[1]);
