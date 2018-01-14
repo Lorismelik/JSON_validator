@@ -22,10 +22,10 @@ run Docker image:
 $ sudo docker run --rm -d -p 80:80 lorismelik/json_validator
 ```
 
-To send JSON object, make a POST request as shown below:
+To send JSON object, make a PUT request as shown below:
 
 ```shell
-$ curl --form "file=@filename" localhost:80
+$ curl --upload-file filename.json http://localhost:80
 ```
 
 ## License
