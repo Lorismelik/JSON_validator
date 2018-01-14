@@ -1,6 +1,6 @@
 FROM openjdk:alpine
 
-EXPOSE 8080
+EXPOSE 80
 RUN apk add --no-cache git
 RUN apk add --no-cache maven
 RUN git clone https://github.com/Lorismelik/JSON_validator.git
