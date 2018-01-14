@@ -29,7 +29,7 @@ public class Resource {
      *
      * @throws IOException
      * @param InputStream stream
-     * @param FormDataContentDisposition fileDetail
+     * @param String file
      *
      * @return Response
      */
@@ -50,7 +50,7 @@ public class Resource {
      *
      * @throws IOException
      * @param JsonSyntaxException e
-     * @param FormDataContentDisposition fileDetail
+     * @param String file
      *
      * @return Map<String, String>
      */
