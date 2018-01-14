@@ -5,10 +5,9 @@
  */
 package com.mycompany.json_validator;
 
-import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import javax.ws.rs.PathParam;
 import com.google.gson.*;
 import javax.ws.rs.core.Response;
 import java.io.InputStream;
@@ -17,34 +16,49 @@ import java.io.BufferedReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.ws.rs.Consumes;
-import org.glassfish.jersey.media.multipart.FormDataParam;
-import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
-/* Root resource */
+
 @Path("")
-public class Resource {
-    @POST
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces(MediaType.TEXT_PLAIN)
 
-    public Response checkFile(@FormDataParam("file") InputStream stream, @FormDataParam("file") FormDataContentDisposition fileDetail){
-        final String json = new BufferedReader(new InputStreamReader(stream)).lines().collect(Collectors.joining());  
+public class Resource {
+
+    @PUT
+    @Path("/{file}")
+    /**
+     * Vadidates JSON file.
+     *
+     * @throws IOException
+     * @param InputStream stream
+     * @param FormDataContentDisposition fileDetail
+     *
+     * @return Response
+     */
+    public Response checkFile(@PathParam("file") String file, InputStream stream) {
+        final String json = new BufferedReader(new InputStreamReader(stream)).lines().collect(Collectors.joining());
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         Object result;
         try {
             result = gson.fromJson(json, Object.class);
-       } catch (JsonSyntaxException e) {
-            return Response.status(200).entity(gson.toJson(makeError(e, fileDetail))).build();
+        } catch (JsonSyntaxException e) {
+            return Response.status(200).entity(gson.toJson(makeError(e, file))).build();
         }
         return Response.status(200).entity(gson.toJson(result)).build();
     }
-    
-     private Map<String, String> makeError(JsonSyntaxException e, FormDataContentDisposition fileDetail) {
+
+    /**
+     * Makes error message.
+     *
+     * @throws IOException
+     * @param JsonSyntaxException e
+     * @param FormDataContentDisposition fileDetail
+     *
+     * @return Map<String, String>
+     */
+    private Map<String, String> makeError(JsonSyntaxException e, String file) {
         String messageDetail = e.getCause().getMessage();
         Map<String, String> error = new HashMap<>();
         String[] arrayMessage = messageDetail.split(" at", 2);
-        error.put("resource", fileDetail.getFileName());
+        error.put("resource", file);
         error.put("request-id", "12345");
         error.put("errorCode", "12345");
         error.put("errorPlace", arrayMessage[1]);
