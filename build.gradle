@@ -1,0 +1,74 @@
+
+
+
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath 'com.bmuschko:gradle-docker-plugin:3.2.1'
+	classpath 'com.github.rholder:gradle-one-jar:1.0.4'
+    }
+}
+
+apply plugin: 'java'
+apply plugin:'application'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'com.bmuschko.docker-remote-api'
+
+group 'com.mycompany.json_validator'
+
+
+mainClassName = 'com.mycompany.json_validator.Main'
+
+
+
+task fatJar(type: Jar) {
+
+ exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.MF'
+	manifest {
+attributes (
+	
+   'Main-Class': 'com.mycompany.json_validator.Main'
+ )
+}
+    baseName 'json_validator'
+	from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } } 
+	with jar
+}
+
+task createDockerfile(type: Dockerfile) {
+    destFile = project.file('./Dockerfile')
+    from 'openjdk:alpine'
+    exposePort 80
+    addFile ('.', '/')
+    defaultCommand ('java', '-jar', '/build/libs/json_validator.jar')
+}
+
+task dockerImage(type: DockerBuildImage) {
+    dependsOn fatJar
+    dependsOn createDockerfile
+    inputDir = createDockerfile.destFile.parentFile
+    tag = 'json_validator'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'org.glassfish.jersey.core', name: 'jersey-server', version: '2.2'
+    compile "org.glassfish.jersey.containers:jersey-container-grizzly2-http:2.17"
+    compile group: 'com.google.code.gson', name: 'gson', version: '2.8.0'
+    compile group: 'org.glassfish.jersey.media', name: 'jersey-media-moxy', version: '2.17'
+    compile "org.glassfish.jersey.media:jersey-media-multipart:2.17"
+    
+}
+

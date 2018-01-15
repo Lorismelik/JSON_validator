@@ -10,22 +10,23 @@
      {
          "errorMessage" : "plain language description of the problem",
          "errorPlace" : "the point where error has occurred",
-	 "resource" : "filename"
+	     "resource" : "filename"
      }
      ```
 
 ## Deployment
 
-run Docker image:
+Build gradle package and run Docker image::
 
 ```shell
-$ sudo docker run --rm -d -p 80:80 lorismelik/json_validator
+$ ./gradlew build dockerImage
+$ docker run -d -p 80:80 json_validator
 ```
 
-To send JSON object, make a PUT request as shown below:
+To test that JVS is working properly, make a POST request as shown below:
 
 ```shell
-$ curl --upload-file filename.json http://localhost:80
+s curl --data-binary @filename.json http://localhost:80
 ```
 
 ## License
