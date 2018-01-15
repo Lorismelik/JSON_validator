@@ -23,10 +23,10 @@ $ ./gradlew build dockerImage
 $ docker run -d -p 80:80 json_validator
 ```
 
-To test that JVS is working properly, make a POST request as shown below:
+To test that JVS is working properly, make a PUT request as shown below:
 
 ```shell
-s curl --data-binary @filename.json http://localhost:80
+s curl --upload-file filename.json http://localhost 
 ```
 
 ## License
